@@ -19,7 +19,7 @@ app = Dash(__name__)
 df = pd.read_csv('output.csv')
 
 app.layout = html.Div(children=[
-    html.H1(children='Pink Morsel Sales'),
+    html.H1(children='Pink Morsel Sales', id="header"),
 
     html.Div(children='''
         Dash: A web application framework for your data.
