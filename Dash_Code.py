@@ -2,7 +2,7 @@
 # visit http://127.0.0.1:8050/ in your web browser.
 
 # import dash
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, Input, Output, callback
 import plotly.express as px
 import pandas as pd
 
@@ -18,8 +18,6 @@ app = Dash(__name__)
 
 df = pd.read_csv('output.csv')
 
-fig = px.line(df, x="date", y="sales")
-
 app.layout = html.Div(children=[
     html.H1(children='Pink Morsel Sales'),
 
@@ -27,11 +25,28 @@ app.layout = html.Div(children=[
         Dash: A web application framework for your data.
     '''),
 
+    html.Div([
+        html.Label('Regions'),
+        dcc.RadioItems(
+            df['region'].unique(),
+            'north',
+            id='region',
+            inline=True
+        )
+    ], style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'margin-top': '35%'}),
+
     dcc.Graph(
-        id='example-graph',
-        figure=fig
+        id='result'
     )
 ])
+
+@callback(
+    Output('result', 'figure'),
+    Input('region', 'value'))
+def graph(region):
+    fig = px.line(df[df['region'] == region], x="date", y="sales")
+    return fig
+
 
 if __name__ == '__main__':
     app.run(debug=True)
